@@ -35,13 +35,13 @@ You can find these installation instructions [here](https://docs.px4.io/master/e
 
 #### Run the container in interactive mode terminal with bash. If the image is not present, it is automatically downloaded form docker hub. Here we are mounting hosts directory (where the catkin workspace and firmware is present) to the container directory using -v command. Changes are bidirectional.
 
-- privilaged : it will acess to hosts ports such as usb
-- v : linking host and docker
+- privilaged : it will enable access to hosts ports such as usb
+- v : linking host and docker folders
 - it : enable interactive terminal 
-- p : port mapping from host to container
+- p : port mapping from host to container, format of < host >:< container >
 - name : name of container
 
-image location (docker hub) : px4io/px4-dev-ros-melodic:2021-08-18
+image location (docker hub) : sohananisetty/pheonix-ros-melodic-px4-gazebo
 
 
     # enable access to xhost from the container
@@ -67,7 +67,7 @@ image location (docker hub) : px4io/px4-dev-ros-melodic:2021-08-18
 
 #### If you don't remember container name
 
-    docker ps -a
+    docker ps -a ##list all containers
 
 ## Removing a container
 
@@ -104,7 +104,7 @@ image location (docker hub) : px4io/px4-dev-ros-melodic:2021-08-18
     export GAZEBO_RESOURCE_PATH=$GAZEBO_RESOURCE_PATH/home/catkin_ws/src/pheonix/worlds
 
 
-### Run 5 terminals side by side
+### Run 4 terminals side by side
 
 #### In terminal 1 launch SITL
 
