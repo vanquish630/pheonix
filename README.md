@@ -49,7 +49,7 @@ image location (docker hub) : px4io/px4-dev-ros-melodic:2021-08-18
 
     # Run docker and open bash shell
 
-    docker run -it --privileged --env=LOCAL_USER_ID="$(id -u)" -v ~/pheonix_project/home:/home/:rw -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=:0 -p 14556:14556/udp --name=px4container px4io/px4-dev-ros-melodic:2021-08-18 bash
+    docker run -it --privileged --env=LOCAL_USER_ID="$(id -u)" -v ~/pheonix_project/home:/home/:rw -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=:0 -p 14556:14556/udp --name=px4container sohananisetty/pheonix-ros-melodic-px4-gazebo bash
 
 #### **Note**: Run the below commands inside the container.
 ####  Build SITL (run in px4 directory). This is for building quadcopter with gazebo simulator. For other vehicle types or other simulators see the [documentation](https://docs.px4.io/master/en/simulation/). 
