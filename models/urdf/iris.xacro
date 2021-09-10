@@ -1,0 +1,552 @@
+<?xml version= "1.0" ?>
+<robot name="drone_with_depth_camera" xmlns:xacro="http://www.ros.org/wiki/xacro">
+
+    <!-- <xacro:include filename="$(find pheonix)/models/urdf/materials.xacro" />
+    <xacro:include filename="$(find pheonix)/models/urdf/iris.gazebo" />
+    <xacro:include filename="$(find pheonix)/models/urdf/macros.xacro" /> -->
+<xacro:include filename="$(find pheonix)/models/urdf/iris.gazebo" />
+    <link name='base_link'>
+      <origin rpy="0 0 0" xyz="0 0 0.194923"/>
+
+      <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+
+        <mass value = "1.5"/>
+        <inertia
+          ixx = "0.008"
+          ixy = "0"
+          ixz = "0"
+          iyy = "0"
+          iyz = "0"
+          izz = "0.017"
+        />
+      </inertial>
+
+      <collision name='base_link_collision'>
+        <origin rpy="0 0 0" xyz="0 0 -0.08"/>
+        <geometry>
+          <box
+            size = "0.47 0.47 0.23"
+          />
+        </geometry>
+        <surface>
+          <contact>
+            <ode>
+              <max_vel>100.0</max_vel>
+              <min_depth>0.001</min_depth>
+            </ode>
+          </contact>
+          <friction>
+            <ode>
+              <mu>1.0</mu>
+              <mu2>1.0</mu2>
+            </ode>
+          </friction>
+        </surface>
+      </collision>
+
+      <visual name='base_link_visual'>
+        <geometry>
+           <mesh
+           filename="package://pheonix/models/urdf/meshes/iris.dae" />
+          />
+        </geometry>
+        <material name="grey"/>
+
+      </visual>
+
+      <visual name='front_left_leg_visual'>
+        <origin rpy="0 0 0" xyz="0.123 0.22 -0.11"/>
+        <geometry>
+          <cylinder
+            radius = "0.005"
+            length = "0.17"
+          />
+        </geometry>
+        <material name="white"/>
+
+      </visual>
+      <visual name='front_right_leg_visual'>
+        <origin rpy="0 0 0" xyz="0.123 -0.22 -0.11"/>
+        <geometry>
+           <cylinder
+            radius = "0.005"
+            length = "0.17"
+          />
+        </geometry>
+        <material name="white"/>
+
+      </visual>
+      <visual name='rear_left_leg_visual'>
+        <origin rpy="0 0 0" xyz="-0.140 0.21 -0.11"/>
+
+        <geometry>
+           <cylinder
+            radius = "0.005"
+            length = "0.17"
+          />
+        </geometry>
+        <material name="white"/>
+
+      </visual>
+      <visual name='rear_right_leg_visual'>
+        <origin rpy="0 0 0" xyz="-0.140 -0.21 -0.11"/>
+        <geometry>
+           <cylinder
+            radius = "0.005"
+            length = "0.17"
+          />
+        </geometry>
+        <material name="white"/>
+
+      </visual>
+    </link>
+    <link name='iris/ground_truth/odometry_sensorgt_link'>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+      <inertial>
+        <pose>0 0 0 0 -0 0</pose>
+        <mass value = "1.5"/>
+          <inertia
+          ixx = "0.0001"
+          ixy = "0"
+          ixz = "0"
+          iyy = "0.0002"
+          iyz = "0"
+          izz = "0.0002"
+        />
+      </inertial>
+    </link>
+
+    <joint name='iris/ground_truth/odometry_sensorgt_joint' type='revolute'>
+      <child link = "iris/ground_truth/odometry_sensorgt_link" />
+      <parent link = "base_link" />
+     <axis rpy="0 0 0" xyz="0 0 1"/>
+      <joint_properties damping="1.0" friction="0"/>
+      <limit
+          lower = "0"
+          upper = "0"
+          effort = "0"
+          velocity = "0"
+      />
+    </joint>
+
+
+
+    <link name='iris/imu_link'>
+      <inertial>
+        <origin rpy="0 0 0" xyz="0 0 0"/>
+
+        <mass value = "0.15"/>
+        <inertia
+          ixx = "0.0001"
+          ixy = "0"
+          ixz = "0"
+          iyy = "0.0002"
+          iyz = "0"
+          izz = "0.0002"
+        />
+      </inertial>
+      <sensor name="imu_sensor" type="imu">
+        <origin rpy="0 3.141593 0" xyz="0 0 0"/>
+        <always_on>1</always_on>
+        <update_rate>1000.0</update_rate>
+      </sensor>
+    </link>
+
+    <joint name='iris/imu_joint' type='revolute'>
+      <child link = "iris/imu_link" />
+      <parent link = "base_link" />
+      <axis rpy="0 0 0" xyz="0 0 1"/>
+      <joint_properties damping="1.0" friction="0"/>
+      <limit
+          lower = "0"
+          upper = "0"
+          effort = "0"
+          velocity = "0"
+      />
+        
+    </joint>
+
+    <link name='rotor_0'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertial>
+             <origin rpy="0 -0 0" xyz="0 0 0"/>
+
+        <mass value = "0.025"/>
+        <inertia
+          ixx = "9.75e-06"
+          ixy = "0"
+          ixz = "0"
+          iyy = "0.000166704"
+          iyz = "0"
+          izz = "0.000166704"
+        />
+      </inertial>
+      <collision name='rotor_0_collision'>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+        <geometry>
+          <cylinder
+            radius = "0.005"
+            length = "0.1"
+          />
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='rotor_0_visual'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+           <mesh
+           filename="package://pheonix/models/urdf/meshes/iris_prop_ccw.dae" />
+          />
+        </geometry>
+         <material name="green"/>
+      </visual>
+      
+    </link>
+
+
+    <joint name='rotor_0_joint' type='revolute'>
+      <child link = "rotor_0" />
+      <parent link = "base_link" />
+      <origin rpy="0  0  0" xyz="0.13    -0.22     0.021792"/>
+
+      <axis rpy="0 0 0" xyz="0 0 1"/>
+      <joint_properties damping="0.004" friction = "0"/>
+        <limit
+          lower = "-1e+16"
+          upper = "1e+16"
+          effort = "10000"
+          velocity = "10000"
+        />
+    </joint>
+
+
+
+    <link name='rotor_1'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertial>
+        <origin rpy="0 -0 0" xyz="0 0 0"/>
+        <mass value = "0.025"/>
+       <inertia
+          ixx = "9.75e-06"
+          ixy = "0"
+          ixz = "0"
+          iyy = "0.000166704"
+          iyz = "0"
+          izz = "0.000166704"
+        />
+      </inertial>
+      <collision name='rotor_1_collision'>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+        <geometry>
+          <cylinder
+            radius = "0.005"
+            length = "0.1"
+          />
+        
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='rotor_1_visual'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh
+           filename="package://pheonix/models/urdf/meshes/iris_prop_ccw.dae" />
+          />
+        </geometry>
+        <material name="yellow"/>
+      </visual>
+     
+    </link>
+
+    <joint name='rotor_1_joint' type='revolute'>
+      <child link="rotor_1"/>
+      <parent link = "base_link" />
+      <origin rpy="0  0  0" xyz="-0.135     0.205      0.021792"/>
+      <axis rpy="0 0 0" xyz="0 0 1"/>
+      <joint_properties damping="0.004" friction = "0"/>
+        <limit
+          lower = "-1e+16"
+          upper = "1e+16"
+          effort = "10000"
+          velocity = "10000"
+          />
+    </joint>
+
+
+    <link name='rotor_2'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+      <inertial>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+        <mass value = "0.025"/>
+       <inertia
+          ixx = "9.75e-06"
+          ixy = "0"
+          ixz = "0"
+          iyy = "0.000166704"
+          iyz = "0"
+          izz = "0.000166704"
+        />
+      </inertial>
+      <collision name='rotor_2_collision'>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+        <geometry>
+           <cylinder
+            radius = "0.005"
+            length = "0.1"
+          />
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='rotor_2_visual'>
+      <origin rpy="0 0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh
+           filename="package://pheonix/models/urdf/meshes/iris_prop_cw.dae" />
+          />
+        </geometry>
+         <material name="green"/>
+      </visual>
+    </link>
+
+
+    <joint name='rotor_2_joint' type='revolute'>
+      <child link = "rotor_2"/>
+      <parent link = "base_link" />
+      <axis rpy="0 0 0" xyz="0 0 1"/>
+          <origin rpy="0  0  0" xyz="0.125     0.221     0.021792"/>
+
+      <joint_properties damping="0.004" friction = "0"/>
+        <limit
+          lower = "-1e+16"
+          upper = "1e+16"
+           effort = "10000"
+          velocity = "10000"
+        />
+    </joint>
+
+
+    <link name='rotor_3'>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+      <inertial>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+        <mass value = "0.025"/>
+        <inertia
+          ixx = "9.75e-06"
+          ixy = "0"
+          ixz = "0"
+          iyy = "0.000166704"
+          iyz = "0"
+          izz = "0.000166704"
+        />
+      </inertial>
+      <collision name='rotor_3_collision'>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+        <geometry>
+           <cylinder
+            radius = "0.005"
+            length = "0.1"
+          />
+        </geometry>
+        <surface>
+          <contact>
+            <ode/>
+          </contact>
+          <friction>
+            <ode/>
+          </friction>
+        </surface>
+      </collision>
+      <visual name='rotor_3_visual'>
+      <origin rpy="0 -0 0" xyz="0 0 0"/>
+        <geometry>
+          <mesh
+           filename="package://pheonix/models/urdf/meshes/iris_prop_cw.dae" />
+          />
+        </geometry>
+         <material name="yellow"/>
+      </visual>
+    </link>
+
+    <joint name='rotor_3_joint' type='revolute'>
+      <child link = "rotor_3"/>
+      <parent link = "base_link" />
+     <axis rpy="0 0 0" xyz="0 0 1"/>
+         <origin rpy="0  0  0" xyz="-0.138 -0.202 0.021792"/>
+
+      <joint_properties damping="0.004" friction = "0"/>
+        <limit
+          lower = "-1e+16"
+          upper = "1e+16"
+           effort = "10000"
+          velocity = "10000"
+        />
+    </joint>
+
+
+
+
+   <joint name="iris_gimbal_mount" type="revolute">
+      <parent link = "base_link"/>
+      <child link="gimbal_small_2d__base_link"/>
+      <axis rpy="0 0 0" xyz="0 0 1"/>
+      <origin rpy="1.5707 0 -1.5707" xyz="0.14  0 -0.13"/>
+      <limit
+          lower = "0"
+          upper = "0"
+          effort = "100"
+          velocity = "100"
+      />
+    </joint>
+
+
+  <joint name="gimbal_small_2d__tilt_joint" type="revolute">
+    <parent link="gimbal_small_2d__base_link"/>
+    <child link="gimbal_small_2d__tilt_link"/>
+    <origin rpy="0  0  0" xyz="0   0   0.2"/>
+    <axis xyz="1  0  0"/>
+    <limit effort="10.0" lower="-0.1" upper="3.14159265" velocity="0"/>
+  </joint>
+
+
+  <link name="gimbal_small_2d__base_link">
+    <inertial>
+      <mass value="0.2"/>
+      <origin rpy="0  0  0" xyz="0  0  0"/>
+      <inertia ixx="0.0001" ixy="0" ixz="0" iyy="0.0001" iyz="0" izz="0.0001"/>
+    </inertial>
+    <collision name="gimbal_small_2d__base_col">
+      <origin rpy="0  0  0" xyz="0.01   0.075  0.155"/>
+      <geometry>
+        <box size="0.1 0.05 0.15"/>
+      </geometry>
+    </collision>
+    <visual name="gimbal_small_2d__base_main_viz">
+      <origin rpy="0  0  0" xyz="0    0    0.18"/>
+      <geometry>
+        <mesh filename="package://pheonix/models/urdf/meshes/base_main.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+    <visual name="gimbal_small_2d__base_arm_viz">
+      <origin rpy="0  0  0" xyz="0    0    0.18"/>
+      <geometry>
+        <mesh filename="package://pheonix/models/urdf/meshes/base_arm.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+
+
+  </link>
+  <link name="gimbal_small_2d__tilt_link">
+
+    <inertial>
+      <mass value="0.01"/>
+      <origin rpy="0  0  0" xyz="0  0  0"/>
+      <inertia ixx="0.00001" ixy="0" ixz="0" iyy="0.00001" iyz="0" izz="0.00001"/>
+    </inertial>
+
+    <collision name="gimbal_small_2d__tilt_col">
+      <origin rpy="0  0  0" xyz="0     0    -0.025"/>
+      <geometry>
+        <mesh filename="package://pheonix/models/urdf/meshes/tilt.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </collision>
+
+    <collision name="gimbal_small_2d__camera_col">
+      <origin rpy="0  0  0" xyz="0  0  0"/>
+      <geometry>
+        <cylinder length="0.050" radius="0.025"/>
+      </geometry>
+    </collision>
+
+    <visual name="gimbal_small_2d__tilt_viz">
+      <origin rpy="0  1.57  0" xyz="0     0    -0.025"/>
+      <geometry>
+        <mesh filename="package://pheonix/models/urdf/meshes/tilt.dae" scale="0.001 0.001 0.001"/>
+      </geometry>
+    </visual>
+
+    <visual name="gimbal_small_2d__camera_viz">
+      <origin rpy="0  0  0" xyz="0  0  0"/>
+      <geometry>
+        <cylinder length="0.050" radius="0.025"/>
+      </geometry>
+    </visual>
+
+  </link>
+
+
+
+ <link name="depth_cam_link">
+      <origin rpy="0  0  3.14" xyz="0   0   -0.04"/>
+       <inertial>
+      <mass value="0.01"/>
+      <inertia ixx="0.001" ixy="0" ixz="0" iyy="0.001" iyz="0" izz="0.001"/>
+    </inertial>
+      <visual name='depth_cam_link'>
+      <origin rpy="0  1.5707  3.14" xyz="0   0   -0.04"/>
+      <geometry>
+        <cylinder length="0.018" radius="0.005"/>
+      </geometry>
+      </visual>
+    </link>
+
+  <joint name="depth_camera_mount" type="fixed">
+<!--       <origin rpy="0  -1.5707  3.14" xyz="0   0  0"/>
+ -->
+      <child link = "depth_cam_link" />
+      <parent link = "base_link" />
+  
+    </joint>
+
+    <!-- Dummy Joint -->
+  <joint name="kinect_optical_joint" type="fixed">
+      <!-- <axis xyz="0 1 0" /> -->
+      <origin xyz="0.0 0.0 0.0" rpy="-1.57 0 1.57"/>
+      <parent link="depth_cam_link"/>
+      <child link="kinect_depth_link"/>
+    </joint>
+  <!-- Dummy Link -->
+  <link name="kinect_depth_link">
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <box size="0.02 0.02 0.02"/>
+      </geometry>
+    </collision>
+  </link>
+
+
+
+    <joint name="cameraLeft_depth_joint" type="fixed">
+    <origin xyz="0 0 0" rpy="1.570 -1.570 0 "/>
+    <parent link="depth_cam_link"/>
+    <child link="camera_depth_link"/>
+  </joint>
+
+  <link name="camera_depth_link"></link>
+ 
+
+
+  </robot>

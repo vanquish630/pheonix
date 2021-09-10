@@ -1,0 +1,6 @@
+<!-- <launch>
+    <node name="simple_control" pkg="marker_navigator" type="movement_server.py" output="screen"/>
+</launch> -->
+<launch>
+    <node name="simple_control" pkg="pheonix" type="movement_server.py" output="screen"/>
+</launch>
