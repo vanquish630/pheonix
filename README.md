@@ -24,8 +24,8 @@ You can find these installation instructions [here](https://docs.px4.io/master/e
 
 #### We are setting up the workspace on users computer which will be linked to the container. You could do the same inside the container itself, but you will loose all your data once you remove the container.
 
-    mkdir src
-    cd src
+    mkdir -p pheonix_project/home
+    cd pheonix_project/home
     git clone https://github.com/PX4/PX4-Autopilot.git
     mv PX4-Autopilot px4
     cd px4
@@ -49,12 +49,12 @@ image location (docker hub) : px4io/px4-dev-ros-melodic:2021-08-18
 
     # Run docker and open bash shell
 
-    docker run -it --privileged --env=LOCAL_USER_ID="$(id -u)" -v ~/px4/src:/src/:rw -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=:0 -p 14556:14556/udp --name=pxcontainer px4io/px4-dev-ros-melodic:2021-08-18 bash
+    docker run -it --privileged --env=LOCAL_USER_ID="$(id -u)" -v ~/pheonix_project/home:/home/:rw -v /tmp/.X11-unix:/tmp/.X11-unix:ro -e DISPLAY=:0 -p 14556:14556/udp --name=px4container px4io/px4-dev-ros-melodic:2021-08-18 bash
 
 #### **Note**: Run the below commands inside the container.
 ####  Build SITL (run in px4 directory). This is for building quadcopter with gazebo simulator. For other vehicle types or other simulators see the [documentation](https://docs.px4.io/master/en/simulation/). 
 
-    cd src/px4    #This is <container_src>
+    cd home/px4    #This is in container
     make px4_sitl_default gazebo
 
 
@@ -83,13 +83,67 @@ image location (docker hub) : px4io/px4-dev-ros-melodic:2021-08-18
 #### See the active containers
     docker ps
 
-#### navigate into catkin workspace 
+#### Navigate into catkin workspace (inside container)
 
-    cd src/catkin_ws/src
-    git clone 
+    mkdir -p home/catkin_ws/src
+    cd home/catkin_ws/src
+    git clone https://github.com/vanquish630/pheonix.git
     cd ..
     catkin_make
     source devel/setup.bash
 
+#### Add following add the end of bashrc
+    px4_dir=/home/px4
+    source /opt/ros/melodic/setup.bash
+    source /home/catkin_ws/devel/setup.bash
+    source $px4_dir/Tools/setup_gazebo.bash $px4_dir $px4_dir/build/px4_sitl_default
+    export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$px4_dir
+    export ROS_PACKAGE_PATH=$ROS_PACKAGE_PATH:$px4_dir/Tools/sitl_gazebo
+    export GAZEBO_MODEL_PATH=$GAZEBO_MODEL_PATH/home/catkin_ws/src/gazebo_models:/home/catkin_ws/src/pheonix/models
+    export GAZEBO_PLUGIN_PATH=$GAZEBO_PLUGIN_PATH/usr/lib/x86_64-linux-gnu/gazebo-9/plugins
+    export GAZEBO_RESOURCE_PATH=$GAZEBO_RESOURCE_PATH/home/catkin_ws/src/pheonix/worlds
+
+
+### Run 5 terminals side by side
+
+#### In terminal 1 launch SITL
+
+    roslaunch pheonix gazebo_sitl.launch 
+
+
+#### In terminal 2 launch mavros
+
+    roslaunch pheonix mavros.launch 
+
+#### In terminal 3 launch service server taking care of movement
+
+    roslaunch pheonix simple_control.launch 
+
+#### In terminal 4 launch custom program
+
+    rosrun pheonix triangle.py
+
+
+## Problems
+
+#### In case gui error comes or cannot open display error
+
+    #run this in the host machine
+    xhost +
+
+#### In case gazebo gets stuck in physics properties
+
+    # download models from git
+    git clone https://github.com/osrf/gazebo_models.git
+    # copy contents of downloaded directory to gazebo model directory
+    cp -r <download_location>/* ~/.gazebo/models 
+
+#### In case px4 or mavlink_sitl package not found
+
+    source ~/.bashrc
+
+#### In case gazebo error 255 comes or if gazebo reloading past session instead of bringing up a fresh session
+
+    killall gzserver
 
 
