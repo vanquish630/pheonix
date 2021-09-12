@@ -83,7 +83,7 @@ image location (docker hub) : sohananisetty/pheonix-ros-melodic-px4-gazebo
 #### See the active containers
     docker ps
 
-#### Navigate into catkin workspace (inside container)
+#### Navigate into catkin workspace (inside container). 
 
     mkdir -p home/catkin_ws/src
     cd home/catkin_ws/src
@@ -91,6 +91,14 @@ image location (docker hub) : sohananisetty/pheonix-ros-melodic-px4-gazebo
     cd ..
     catkin_make
     source devel/setup.bash
+
+#### Your home directory should have this structure :
+
+    home
+    --catkin_ws
+       --src
+         --pheonix
+    --px4
 
 #### Add following add the end of bashrc
     px4_dir=/home/px4
